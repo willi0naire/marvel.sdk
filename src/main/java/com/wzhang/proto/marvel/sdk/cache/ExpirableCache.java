@@ -75,14 +75,14 @@ public class ExpirableCache<K, V> implements MyCache<K, V> {
 	}
 
 	private void removeExpiredEntries() {
-		System.out.println("evicting cache...");
+		System.out.println(String.format("%s evicting cache...", LocalDateTime.now()));
 		for (K key : expirationTimes.keySet()) {
 			if (null == expirationTimes.get(key) || expirationTimes.get(key) <= System.nanoTime()) {
 				System.out.println(String.format("%s removing expired cache with key=%s result=%s", LocalDateTime.now(),
 						key, remove(key)));
 			}
 		}
-		System.out.println("done evicting cache...");
+		System.out.println(String.format("%s done evicting cache...", LocalDateTime.now()));
 	}
 
 	public void shutdown() {
