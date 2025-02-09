@@ -1,6 +1,7 @@
 package com.wzhang.proto.marvel.sdk.cache;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
@@ -16,7 +17,7 @@ public class ExpirableCache<K, V> implements MyCache<K, V> {
 	private final String MISS = "MISS";
 	private final ConcurrentMap<K, V> cache = new ConcurrentHashMap<>();
 	private final ConcurrentMap<K, Long> expirationTimes = new ConcurrentHashMap<>();
-	private final ConcurrentMap<String, Long> hitMissMap = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, Long> stats = new ConcurrentHashMap<>();
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final long expirationDuration;
 	private final TimeUnit timeUnit;
@@ -24,15 +25,19 @@ public class ExpirableCache<K, V> implements MyCache<K, V> {
 	public ExpirableCache(long expirationDuration, TimeUnit timeUnit) {
 		this.expirationDuration = expirationDuration;
 		this.timeUnit = timeUnit;
-		hitMissMap.put(HIT, 0L);
-		hitMissMap.put(MISS, 0L);
+		this.initStats();
 		scheduler.scheduleAtFixedRate(this::removeExpiredEntries, expirationDuration, expirationDuration, timeUnit);
+	}
+
+	private void initStats() {
+		stats.put(HIT, 0L);
+		stats.put(MISS, 0L);
 	}
 
 	@Override
 	public V get(K key) {
 		final var V = cache.get(key);
-		hitMissMap.merge(null == V ? MISS : HIT, 1L, Long::sum);
+		stats.merge(null == V ? MISS : HIT, 1L, Long::sum);
 		return cache.get(key);
 	}
 
@@ -67,8 +72,7 @@ public class ExpirableCache<K, V> implements MyCache<K, V> {
 	public boolean remove(K key) {
 		final var V = cache.remove(key);
 		expirationTimes.remove(key);
-		hitMissMap.put(HIT, 0L);
-		hitMissMap.put(MISS, 0L);
+		initStats();
 		if (null != V)
 			System.out.println("removed: " + key);
 		return null != V;
@@ -91,11 +95,16 @@ public class ExpirableCache<K, V> implements MyCache<K, V> {
 
 	@Override
 	public long getHit() {
-		return hitMissMap.get(HIT);
+		return stats.get(HIT);
 	}
 
 	@Override
 	public long getMiss() {
-		return hitMissMap.get(MISS);
+		return stats.get(MISS);
+	}
+
+	@Override
+	public Map<String, Long> getStats() {
+		return stats;
 	}
 }
