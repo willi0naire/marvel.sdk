@@ -1,5 +1,6 @@
 package com.wzhang.proto.marvel.sdk.cache;
 
+import java.util.Map;
 import java.util.function.Function;
 
 public interface MyCache<K, V> {
@@ -18,4 +19,6 @@ public interface MyCache<K, V> {
 	public long getHit();
 
 	public long getMiss();
+
+	public Map<String, Long> getStats();
 }
