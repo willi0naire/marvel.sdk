@@ -5,7 +5,7 @@
 
 	<groupId>com.wzhang.proto</groupId>
 	<artifactId>marvel.sdk</artifactId>
-	<version>1.1.9</version>
+	<version>1.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>marvel.sdk</name>
@@ -14,7 +14,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.junit.jupiter.version>5.10.2</org.junit.jupiter.version>
-		<org.mockito.version>5.14.2</org.mockito.version>
 		<jakarta.annotation.version>3.0.0</jakarta.annotation.version>
 		<com.fasterxml.jackson.version>2.17.1</com.fasterxml.jackson.version>
 		<com.projectlombok.version>1.18.32</com.projectlombok.version>
@@ -59,13 +58,6 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>${org.junit.jupiter.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>${org.mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- tag::test[] -->
