@@ -1,5 +1,7 @@
 package com.wzhang.proto.marvel.sdk.service;
 
+import java.util.Map;
+
 import com.wzhang.proto.marvel.sdk.cache.ExpirableCache;
 import com.wzhang.proto.marvel.sdk.dto.GetCharactersResponseDTO;
 import com.wzhang.proto.marvel.sdk.enumeration.CacheSetting;
@@ -27,10 +29,10 @@ public class CacheService {
 	}
 
 	public GetCharactersResponseDTO setCharacters(final String hashKey, final GetCharactersResponseDTO characters) {
-		final GetCharactersResponseDTO cached = charactersCache.putIfAbsent(hashKey, characters);
-		if (null == cached)
-			log.info("no cache found for key=" + hashKey);
-		return null != cached ? cached : charactersCache.get(hashKey);
+		if (!hasCharacters(hashKey)) {
+			charactersCache.put(hashKey, characters);
+		}
+		return charactersCache.get(hashKey);
 	}
 
 	public GetCharactersResponseDTO getCharacters(final String hashKey) {
@@ -57,5 +59,9 @@ public class CacheService {
 		final long total = hit + miss;
 		log.info("total hit: {} | total miss: {} | hit ratio: {}% | miss ratio: {}%", hit, miss, (hit * 100.0f) / total,
 				(miss * 100.0f) / total);
+	}
+
+	public Map<String, Long> getStats() {
+		return charactersCache.getStats();
 	}
 }
