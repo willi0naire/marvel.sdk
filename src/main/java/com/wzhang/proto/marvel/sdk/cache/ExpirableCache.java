@@ -42,17 +42,6 @@ public class ExpirableCache<K, V> implements MyCache<K, V> {
 	}
 
 	@Override
-	public boolean contains(K key) {
-		return cache.containsKey(key);
-	}
-
-	@Override
-	public V put(K key, V value) {
-		expirationTimes.put(key, System.nanoTime() + timeUnit.toNanos(expirationDuration));
-		return cache.put(key, value);
-	}
-
-	@Override
 	public V putIfAbsent(K key, V value) {
 		expirationTimes.putIfAbsent(key, System.nanoTime() + timeUnit.toNanos(expirationDuration));
 		return cache.putIfAbsent(key, value);
