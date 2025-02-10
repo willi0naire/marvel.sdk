@@ -1,65 +1,37 @@
-package com.wzhang.proto.marvel.sdk.service;
+package com.wzhang.proto.marvel.sdk.cache;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import com.wzhang.proto.marvel.sdk.dto.GetCharactersResponseDTO;
-
-public class CacheServiceTest {
-	private final CacheService cacheService = CacheService.getInstance();
+public class ExpirableCacheTest {
+	private static final ExpirableCache<String, String> TEST_CACHE = new ExpirableCache<>(60, TimeUnit.SECONDS);
+	private static final String TEST_KEY = "key";
+	private static final String TEST_VALUE = "value";
+	private static final String TEST_KEY_NOT_FOUND = "key_not_found";
 
 	@Test
-	void testGetInstance() {
-		assertNotNull(cacheService);
+	void testGet() {
+		TEST_CACHE.putIfAbsent(TEST_KEY, TEST_VALUE);
+		assertEquals(TEST_VALUE, TEST_CACHE.get(TEST_KEY));
+		assertNull(TEST_CACHE.get(TEST_KEY_NOT_FOUND));
 	}
 
 	@Test
-	void testSetCharacters() {
-		final String key = "38248234234354";
-		final GetCharactersResponseDTO dto = new GetCharactersResponseDTO();
-		dto.setEtag("4243294234830483");
-		final GetCharactersResponseDTO cached = cacheService.setCharacters(key, dto);
-		assertNotNull(cached);
-		assertEquals(dto.getEtag(), cached.getEtag());
+	void testPutIfAbsent() {
+		TEST_CACHE.putIfAbsent(TEST_KEY, TEST_VALUE);
+		assertEquals(TEST_VALUE, TEST_CACHE.get(TEST_KEY));
+		assertNull(TEST_CACHE.get(TEST_KEY_NOT_FOUND));
 	}
 
 	@Test
-	void testGetCharacters() {
-		final String key = "38248234234354";
-		final GetCharactersResponseDTO dto = new GetCharactersResponseDTO();
-		dto.setEtag("4243294234830483");
-		cacheService.setCharacters(key, dto);
-
-		final GetCharactersResponseDTO cached = cacheService.getCharacters(key);
-		assertNotNull(cached);
-		assertEquals(dto.getEtag(), cached.getEtag());
-
-		assertNull(cacheService.getCharacters("324534"));
+	void testRemove() {
+		TEST_CACHE.putIfAbsent(TEST_KEY, TEST_VALUE);
+		assertEquals(TEST_VALUE, TEST_CACHE.get(TEST_KEY));
+		TEST_CACHE.remove(TEST_KEY);
+		assertNull(TEST_CACHE.get(TEST_KEY));
 	}
-
-	@Test
-	void testHasCharacters() {
-		final String key = "38248234234354";
-		final GetCharactersResponseDTO dto = new GetCharactersResponseDTO();
-		cacheService.setCharacters(key, dto);
-
-		assertTrue(cacheService.hasCharacters(key));
-		assertFalse(cacheService.hasCharacters("342543"));
-	}
-
-	@Test
-	void testEvictCharacters() {
-		final String key = "38248234234354";
-		final GetCharactersResponseDTO dto = new GetCharactersResponseDTO();
-		cacheService.setCharacters(key, dto);
-		assertTrue(cacheService.hasCharacters(key));
-		cacheService.evictCharacters(key);
-		assertFalse(cacheService.hasCharacters(key));
-	}
-
 }
