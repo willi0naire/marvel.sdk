@@ -1,10 +1,8 @@
 package com.wzhang.proto.marvel.sdk.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -48,8 +46,8 @@ public class CacheServiceTest {
 		final GetCharactersResponseDTO dto = new GetCharactersResponseDTO();
 		cacheService.setCharacters(key, dto);
 
-		assertTrue(cacheService.hasCharacters(key));
-		assertFalse(cacheService.hasCharacters("342543"));
+		assertNotNull(cacheService.getCharacters(key));
+		assertNull(cacheService.getCharacters("342543"));
 	}
 
 	@Test
@@ -57,9 +55,9 @@ public class CacheServiceTest {
 		final String key = "38248234234354";
 		final GetCharactersResponseDTO dto = new GetCharactersResponseDTO();
 		cacheService.setCharacters(key, dto);
-		assertTrue(cacheService.hasCharacters(key));
+		assertNotNull(cacheService.getCharacters(key));
 		cacheService.evictCharacters(key);
-		assertFalse(cacheService.hasCharacters(key));
+		assertNull(cacheService.getCharacters(key));
 	}
 
 }
