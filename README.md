@@ -30,7 +30,7 @@ implementation 'com.wzhang.proto:marvel.sdk:1.0.0'
 ```
 
 ### Usage
-To use the Marvel SDK, you need to obtain an API key and a private key from the Marvel Developer Portal.
+To use the Marvel SDK, you need to obtain an API key and a private key from the [Marvel Developer Portal](https://developer.marvel.com/).
 ```java
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
