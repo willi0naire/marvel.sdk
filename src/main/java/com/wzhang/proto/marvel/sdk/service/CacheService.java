@@ -29,18 +29,12 @@ public class CacheService {
 	}
 
 	public GetCharactersResponseDTO setCharacters(final String hashKey, final GetCharactersResponseDTO characters) {
-		if (!hasCharacters(hashKey)) {
-			charactersCache.put(hashKey, characters);
-		}
-		return charactersCache.get(hashKey);
+		charactersCache.putIfAbsent(hashKey, characters);
+		return getCharacters(hashKey);
 	}
 
 	public GetCharactersResponseDTO getCharacters(final String hashKey) {
 		return charactersCache.get(hashKey);
-	}
-
-	public boolean hasCharacters(final String hashKey) {
-		return charactersCache.contains(hashKey);
 	}
 
 	/**
