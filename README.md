@@ -63,14 +63,22 @@ public class TestService {
 
 You can search for a list of characters
 ```java
+@Service
+public class TestService {
+...
 	public void test() throws Exception {
 		characterService.getCharactersV1(GetCharacterQuery.builder().nameStartsWith("s").build(), false); // miss
 	}
+}
 ```
 
 You can get the stats on cache
 ```java
+@Service
+public class TestService {
+...
 	public void test() throws Exception {
 		cacheService.getStats();
 	}
+}
 ```
